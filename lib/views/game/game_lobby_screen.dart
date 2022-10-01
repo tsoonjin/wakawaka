@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class LandingScreen extends StatelessWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+class GameLobbyScreen extends StatelessWidget {
+  const GameLobbyScreen({
+      Key? key,
+      required this.index
+  }) : super(key: key);
+  final int index;
 
   void _onExploreButtonTap(BuildContext context) =>
       GoRouter.of(context).push('/colors');
@@ -26,10 +30,21 @@ class LandingScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             Text(
-              'Enter your name',
+              'Welcome to Game $index',
               style: Theme.of(context).textTheme.headline4?.copyWith(
                     color: Colors.white,
                   ),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () => _onExploreButtonTap(context),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black87,
+                ),
+                child: const Text('GO TO EXPLORE PAGE'),
+              ),
             ),
           ],
         ),

@@ -1,4 +1,6 @@
 import 'package:waka/views/landing/landing_screen.dart';
+import 'package:waka/views/lobby/lobby_screen.dart';
+import 'package:waka/views/game/game_lobby_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +28,19 @@ class App extends StatelessWidget {
   final _router = GoRouter(
       routes: [
           GoRoute(path: '/', builder: (context, state) => const LandingScreen()),
+          GoRoute(
+              path: '/games',
+              builder: (context, state) => const LobbyScreen(),
+          ),
+           GoRoute(
+        path: '/games/:id',
+        builder: (context, state) {
+          return GameLobbyScreen(
+            key: state.pageKey,
+            index: int.parse(state.params['id'] ?? '0')
+          );
+        },
+      ),
       ],
   );
 }
