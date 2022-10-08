@@ -11,14 +11,13 @@ class LandingScreen extends StatefulWidget {
 }
 
 class LandingScreenState extends State<LandingScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     const backgroundColor = Color(0xFFF2EAE0);
 
     return Scaffold(
-      key: _formKey,
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
@@ -35,7 +34,9 @@ class LandingScreenState extends State<LandingScreen> {
                 color: Colors.orange,
             ),
             child:
-        Column(
+        Form(
+            key: formKey,
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
@@ -69,21 +70,21 @@ class LandingScreenState extends State<LandingScreen> {
                     primary: Colors.white
                 ),
                 onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (formKey.currentState!.validate()) {
                         // If the form is valid, display a snackbar. In the real world,
                         // you'd often call a server or save the information in a database.
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                         );
+                        GoRouter.of(context).push('/games');
                     }
-                    GoRouter.of(context).push('/games');
                 },
                 child: const Text('Enter'),
             ),
             ],
         ),
         )
-      )),
+      ))),
     );
   }
 }
