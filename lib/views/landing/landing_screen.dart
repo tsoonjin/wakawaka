@@ -60,7 +60,6 @@ class LandingScreenState extends State<LandingScreen> {
                         decoration: const InputDecoration(
                                         icon: Icon(Icons.person),
                                         border: UnderlineInputBorder(),
-                                        hintText: "Joe",
                                         labelText: 'Enter your username',
                                     ),
                     ))),
