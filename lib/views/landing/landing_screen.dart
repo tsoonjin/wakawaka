@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:waka/view_models/realtime_game_provider.dart';
 
 class LandingScreen extends StatefulWidget {
-  const LandingScreen({Key? key}) : super(key: key);
+  final RealTimeGameProvider provider;
+  const LandingScreen({Key? key, required this.provider}) : super(key: key);
 
   @override
   LandingScreenState createState() {
@@ -12,6 +14,7 @@ class LandingScreen extends StatefulWidget {
 
 class LandingScreenState extends State<LandingScreen> {
   final formKey = GlobalKey<FormState>();
+  final TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,7 @@ class LandingScreenState extends State<LandingScreen> {
                     constraints: BoxConstraints.tight(const Size(300, 50)),
                     child:
                     TextFormField(
+                        controller: usernameController,
                         validator: (String? value) {
                             if (value == null || value.isEmpty) {
                                 return "Thou shall not enter without a name";
@@ -75,7 +79,10 @@ class LandingScreenState extends State<LandingScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                         );
-                        GoRouter.of(context).push('/games');
+                        print(usernameController.text);
+                        widget.provider.connectServer(usernameController.text);
+                        widget.provider.closeServer();
+                        // GoRouter.of(context).push('/games');
                     }
                 },
                 child: const Text('Enter'),

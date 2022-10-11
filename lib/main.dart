@@ -1,3 +1,4 @@
+import 'package:waka/view_models/realtime_game_provider.dart';
 import 'package:waka/views/landing/landing_screen.dart';
 import 'package:waka/views/lobby/lobby_screen.dart';
 import 'package:waka/views/game/game_lobby_screen.dart';
@@ -9,7 +10,8 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  App({Key? key}) : super(key: key);
+  late final RealTimeGameProvider _provider;
+  App({Key? key}) : _provider = RealTimeGameProvider(), super(key: key);
 
 
   @override
@@ -25,9 +27,10 @@ class App extends StatelessWidget {
       routerDelegate: _router.routerDelegate,
     );
   }
-  final _router = GoRouter(
+
+  late final _router = GoRouter(
       routes: [
-          GoRoute(path: '/', builder: (context, state) => const LandingScreen()),
+          GoRoute(path: '/', builder: (context, state) => LandingScreen(provider: _provider)),
           GoRoute(
               path: '/games',
               builder: (context, state) => const LobbyScreen(),
