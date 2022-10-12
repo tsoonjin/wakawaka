@@ -12,7 +12,7 @@ class RealTimeGameProvider {
 
   RealTimeGameProvider()
       : _gameServerWebSocket = WebSocketChannel.connect(
-          Uri.parse('wss://localhost:8080/register'),
+          Uri.parse('ws://localhost:8080/connect'),
         );
 
   Stream<GameSocketResponse> get serverStream => _gameServerWebSocket.stream

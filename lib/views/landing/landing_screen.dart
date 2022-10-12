@@ -81,7 +81,6 @@ class LandingScreenState extends State<LandingScreen> {
                         );
                         print(usernameController.text);
                         widget.provider.connectServer(usernameController.text);
-                        widget.provider.closeServer();
                         // GoRouter.of(context).push('/games');
                     }
                 },
