@@ -1,11 +1,24 @@
 import 'package:dio/dio.dart';
 import 'package:waka/models/game_room.dart';
+import 'package:waka/models/post.dart';
 import 'package:waka/utils/constants.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:csv/csv.dart';
 
 class GameService {
     var dio = Dio();
+
+    Future<Post> fetchPosts({ required int pageNumber, int pageSize = 5 }) async {
+        final String requestUrl =   "https://jsonplaceholder.typicode.com/posts?_page=$pageNumber&_limit=$pageSize";
+        final response = await dio.get(requestUrl);
+
+        if (response.statusCode == 200) {
+            final result = response.data;
+            return result.map((post) => Post.fromJson(post)).toList();
+        } else {
+            throw Exception("Failed to get all rooms");
+        }
+    }
 
     Future<List<GameRoom>> fetchOfflineGameRooms({ int pageNumber = 1 }) async {
         final rawData = await rootBundle.loadString("assets/rooms.csv");
