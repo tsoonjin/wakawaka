@@ -12,7 +12,6 @@ class PostList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-          appBar: AppBar(title: const Text("Blog App"), centerTitle: true,),
           body: buildPostsView(),
       );
   }

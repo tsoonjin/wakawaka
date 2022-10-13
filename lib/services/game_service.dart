@@ -8,7 +8,7 @@ import 'package:csv/csv.dart';
 class GameService {
     var dio = Dio();
 
-    Future<Post> fetchPosts({ required int pageNumber, int pageSize = 5 }) async {
+    Future<List<Post>> fetchPosts({ required int pageNumber, int pageSize = 5 }) async {
         final String requestUrl =   "https://jsonplaceholder.typicode.com/posts?_page=$pageNumber&_limit=$pageSize";
         final response = await dio.get(requestUrl);
 
