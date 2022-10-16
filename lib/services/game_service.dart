@@ -14,7 +14,7 @@ class GameService {
 
         if (response.statusCode == 200) {
             final result = response.data;
-            return result.map((post) => Post.fromJson(post)).toList();
+            return result.map<Post>((json) => Post.fromJson(json)).toList();
         } else {
             throw Exception("Failed to get all rooms");
         }

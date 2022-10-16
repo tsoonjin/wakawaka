@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waka/services/game_service.dart';
 
 class PostItem extends StatelessWidget {
 
@@ -37,7 +38,17 @@ class PostItem extends StatelessWidget {
                       fontSize: 18,
                       decoration: TextDecoration.none,
                       color: Colors.white
-                  ),)
+                  ),),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.white
+                    ),
+                    onPressed: () {
+                        print("Join game");
+                    },
+                    child: const Text('Join'),
+                ),
               ],
             ),
           ),

@@ -1,3 +1,6 @@
+import 'package:json_annotation/json_annotation.dart';
+
+@JsonSerializable()
 class Post {
     final int id;
     final String title;

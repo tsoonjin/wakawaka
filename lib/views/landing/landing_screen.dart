@@ -80,7 +80,7 @@ class LandingScreenState extends State<LandingScreen> {
                             const SnackBar(content: Text('Processing Data')),
                         );
                         print(usernameController.text);
-                        widget.provider.connectServer(usernameController.text);
+                        widget.provider.connectServer();
                         // GoRouter.of(context).push('/games');
                     }
                 },
