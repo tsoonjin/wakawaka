@@ -17,6 +17,7 @@ class LobbyScreenState extends State<LobbyScreen> {
   final double breakpoint = 800;
   final int paneProportion = 60;
   late bool _loading;
+  Post? _currentPost;
   late List<Post> _posts;
   GameService gameService = GameService();
 
@@ -26,6 +27,7 @@ class LobbyScreenState extends State<LobbyScreen> {
     setState(() {
         _loading = false;
         _posts = postList;
+        _currentPost = postList[0];
     });
   }
 
@@ -47,14 +49,14 @@ class LobbyScreenState extends State<LobbyScreen> {
             flex: paneProportion,
             child: Container(
                 color: Colors.red,
-                child: PostList(posts: _posts, isLoading: _loading)
+                child: PostList(posts: _posts, isLoading: _loading, parentSetState: setState)
             ),
           ),
           Flexible(
             flex: 100 - paneProportion,
-            child: const Align(
+            child: Align(
                 alignment: Alignment.topCenter,
-                child: PostItem(title: "Room 1", body: "Battle royale game")
+                child: _currentPost != null ? PostItem(title: _currentPost?.title ?? "No title", body: _currentPost?.description ?? "No description found"): null
             )
             // child: Container(
             //     color: Colors.lightBlue

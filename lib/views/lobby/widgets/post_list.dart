@@ -6,8 +6,9 @@ class PostList extends StatelessWidget {
 
   final List<Post> posts;
   final bool isLoading;
+  final Function parentSetState;
 
-  const PostList({Key? key, required this.posts, required this.isLoading}):  super(key: key);
+  const PostList({Key? key, required this.parentSetState,  required this.posts, required this.isLoading}):  super(key: key);
 
   @override
   Widget build(BuildContext context) {
