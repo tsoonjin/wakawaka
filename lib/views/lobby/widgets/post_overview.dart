@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:waka/services/game_service.dart';
+import 'package:waka/models/post.dart';
 
 class PostItem extends StatelessWidget {
 
   final String title;
   final String body;
+  final Color? bgColor;
+  final Function updateCurrentPost;
 
-  const PostItem({Key? key, required this.title, required this.body}): super(key: key);
+  const PostItem({Key? key, this.bgColor, required this.updateCurrentPost, required this.title, required this.body}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +18,9 @@ class PostItem extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
           height: 300,
           width: double.maxFinite,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              color: Color(0XFF8338EC)
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              color: bgColor ?? const Color(0XFF8338EC)
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -46,6 +48,7 @@ class PostItem extends StatelessWidget {
                     ),
                     onPressed: () {
                         print("Join game");
+                        updateCurrentPost(Post(id: 1, title: title, description: body));
                     },
                     child: const Text('Join'),
                 ),

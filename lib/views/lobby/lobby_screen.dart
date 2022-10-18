@@ -16,27 +16,18 @@ class LobbyScreen extends StatefulWidget {
 class LobbyScreenState extends State<LobbyScreen> {
   final double breakpoint = 800;
   final int paneProportion = 60;
-  late bool _loading;
   Post? _currentPost;
-  late List<Post> _posts;
   GameService gameService = GameService();
 
-
-  Future<void> fetchData() async {
-    List<Post> postList = await gameService.fetchPosts(pageNumber: 1);
-    setState(() {
-        _loading = false;
-        _posts = postList;
-        _currentPost = postList[0];
-    });
+  void setCurrentPost(Post post) {
+      setState(() {
+          _currentPost = post;
+      });
   }
 
   @override
   void initState() {
       super.initState();
-      _posts = [];
-      _loading = true;
-      fetchData();
   }
 
   @override
@@ -49,14 +40,14 @@ class LobbyScreenState extends State<LobbyScreen> {
             flex: paneProportion,
             child: Container(
                 color: Colors.red,
-                child: PostList(posts: _posts, isLoading: _loading, parentSetState: setState)
+                child: PostList(updateCurrentPost: setCurrentPost)
             ),
           ),
           Flexible(
             flex: 100 - paneProportion,
             child: Align(
                 alignment: Alignment.topCenter,
-                child: _currentPost != null ? PostItem(title: _currentPost?.title ?? "No title", body: _currentPost?.description ?? "No description found"): null
+                child: _currentPost != null ? PostItem(title: _currentPost?.title ?? "No title", body: _currentPost?.description ?? "No description found", updateCurrentPost: setCurrentPost): null
             )
             // child: Container(
             //     color: Colors.lightBlue
