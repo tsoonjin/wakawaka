@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:waka/models/post.dart';
+import 'package:waka/view_models/realtime_game_provider.dart';
 
 class PostItem extends StatelessWidget {
 
   final String title;
   final String body;
   final Color? bgColor;
+  final RealTimeGameProvider provider;
   final Function updateCurrentPost;
 
-  const PostItem({Key? key, this.bgColor, required this.updateCurrentPost, required this.title, required this.body}): super(key: key);
+  const PostItem({Key? key, this.bgColor, required this.updateCurrentPost, required this.title, required this.body, required this.provider}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +44,21 @@ class PostItem extends StatelessWidget {
                       color: Colors.white
                   ),),
                 const SizedBox(height: 32),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.white
                     ),
                     onPressed: () {
-                        print("Join game");
+                        provider.joinGame(title);
                         updateCurrentPost(Post(id: 1, title: title, description: body));
                     },
                     child: const Text('Join'),
                 ),
+                    ],
+                )
               ],
             ),
           ),

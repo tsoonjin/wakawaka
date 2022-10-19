@@ -79,9 +79,8 @@ class LandingScreenState extends State<LandingScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Processing Data')),
                         );
-                        print(usernameController.text);
-                        widget.provider.connectServer();
-                        // GoRouter.of(context).push('/games');
+                        widget.provider.connectServer(usernameController.text);
+                        GoRouter.of(context).push('/games');
                     }
                 },
                 child: const Text('Enter'),

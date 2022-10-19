@@ -19,21 +19,32 @@ class RealTimeGameProvider {
       .map<GameSocketResponse>(
           (value) => GameSocketResponse.fromJson(jsonDecode(value)));
 
-  void connectServer() {
+  void connectServer(String username) {
     _gameServerWebSocket.sink.add(
       jsonEncode(
         GameSocketRequest(
-           "connect"
+           "connect",
+           { "name":  username}
         ).toJson(),
       ),
     );
   }
 
-  void joinGame(int roomId) {
+  void joinGame(String roomName) {
     _gameServerWebSocket.sink.add(
       jsonEncode(
         GameSocketRequest(
-            "join", roomId
+            "join", { "roomName": roomName }
+        ).toJson(),
+      ),
+    );
+  }
+
+  void readyGame(int roomId) {
+    _gameServerWebSocket.sink.add(
+      jsonEncode(
+        GameSocketRequest(
+            "ready", { "roomId": roomId }
         ).toJson(),
       ),
     );

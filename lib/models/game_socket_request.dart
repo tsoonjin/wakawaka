@@ -4,10 +4,10 @@ part 'game_socket_request.g.dart';
 
 @JsonSerializable()
 class GameSocketRequest {
-  final String name;
-  final int? roomId;
+  final String command;
+  final dynamic payload;
 
-  GameSocketRequest(this.name, [this.roomId]);
+  GameSocketRequest(this.command, this.payload);
 
   factory GameSocketRequest.fromJson(Map<String, dynamic> json) =>
       _$GameSocketRequestFromJson(json);

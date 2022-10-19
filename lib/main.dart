@@ -33,7 +33,7 @@ class App extends StatelessWidget {
           GoRoute(path: '/', builder: (context, state) => LandingScreen(provider: _provider)),
           GoRoute(
               path: '/games',
-              builder: (context, state) => const LobbyScreen(),
+              builder: (context, state) => LobbyScreen(provider: _provider),
           ),
            GoRoute(
         path: '/games/:id',

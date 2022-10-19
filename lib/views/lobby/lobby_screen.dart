@@ -3,9 +3,11 @@ import './widgets/post_overview.dart';
 import './widgets/post_list.dart';
 import 'package:waka/models/post.dart';
 import 'package:waka/services/game_service.dart';
+import 'package:waka/view_models/realtime_game_provider.dart';
 
 class LobbyScreen extends StatefulWidget {
-  const LobbyScreen({Key? key}) : super(key: key);
+  final RealTimeGameProvider provider;
+  const LobbyScreen({Key? key, required this.provider}) : super(key: key);
 
   @override
   LobbyScreenState createState() {
@@ -40,14 +42,14 @@ class LobbyScreenState extends State<LobbyScreen> {
             flex: paneProportion,
             child: Container(
                 color: Colors.red,
-                child: PostList(updateCurrentPost: setCurrentPost)
+                child: PostList(updateCurrentPost: setCurrentPost, provider: widget.provider)
             ),
           ),
           Flexible(
             flex: 100 - paneProportion,
             child: Align(
                 alignment: Alignment.topCenter,
-                child: _currentPost != null ? PostItem(title: _currentPost?.title ?? "No title", body: _currentPost?.description ?? "No description found", updateCurrentPost: setCurrentPost): null
+                child: _currentPost != null ? PostItem(title: _currentPost?.title ?? "No title", body: _currentPost?.description ?? "No description found", updateCurrentPost: setCurrentPost, provider: widget.provider): null
             )
             // child: Container(
             //     color: Colors.lightBlue

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:waka/models/post.dart';
 import 'package:waka/views/lobby/widgets/post_overview.dart';
 import 'package:waka/services/game_service.dart';
+import 'package:waka/view_models/realtime_game_provider.dart';
 
 class PostList extends StatefulWidget {
   final Function updateCurrentPost;
+  final RealTimeGameProvider provider;
 
-  const PostList({Key? key, required this.updateCurrentPost}):  super(key: key);
+  const PostList({Key? key, required this.provider, required this.updateCurrentPost}):  super(key: key);
 
   @override
   PostListState createState() {
@@ -70,7 +72,7 @@ class PostListState extends State<PostList> {
               final Post post = _posts[index];
               return Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: index % 2 == 0 ? PostItem(updateCurrentPost: widget.updateCurrentPost, title: post.title, body: post.description): PostItem(updateCurrentPost: widget.updateCurrentPost, title: post.title, body: post.description, bgColor: Colors.red)
+                  child: index % 2 == 0 ? PostItem(provider: widget.provider, updateCurrentPost: widget.updateCurrentPost, title: post.title, body: post.description): PostItem(provider: widget.provider, updateCurrentPost: widget.updateCurrentPost, title: post.title, body: post.description, bgColor: Colors.red)
               );
           });
   }

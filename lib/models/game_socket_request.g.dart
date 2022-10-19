@@ -8,10 +8,12 @@ part of 'game_socket_request.dart';
 
 GameSocketRequest _$GameSocketRequestFromJson(Map<String, dynamic> json) =>
     GameSocketRequest(
-      json['name'] as String,
+      json['command'] as String,
+      json['payload'],
     );
 
 Map<String, dynamic> _$GameSocketRequestToJson(GameSocketRequest instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'command': instance.command,
+      'payload': instance.payload,
     };
