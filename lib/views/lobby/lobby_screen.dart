@@ -4,6 +4,7 @@ import './widgets/post_list.dart';
 import 'package:waka/models/post.dart';
 import 'package:waka/services/game_service.dart';
 import 'package:waka/view_models/realtime_game_provider.dart';
+import 'package:waka/models/game_socket_response.dart';
 
 class LobbyScreen extends StatefulWidget {
   final RealTimeGameProvider provider;
@@ -38,6 +39,43 @@ class LobbyScreenState extends State<LobbyScreen> {
       return Flex(
         direction: Axis.horizontal,
         children: [
+            Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: StreamBuilder<GameSocketResponse>(
+        stream: widget.provider.serverStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.active &&
+              snapshot.hasData) {
+            return Center(
+              child: Text(
+                '$snapshot.data!.message',
+                style: const TextStyle(
+                  color: Colors.lightBlue,
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const Center(
+              child: Text('No more data'),
+            );
+          }
+
+          return const Center(
+            child: Text('No data'),
+          );
+        },
+      ),
+    ),
           Flexible(
             flex: paneProportion,
             child: Container(
