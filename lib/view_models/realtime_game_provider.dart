@@ -19,6 +19,15 @@ class RealTimeGameProvider {
       .map<GameSocketResponse>(
           (value) => GameSocketResponse.fromJson(jsonDecode(value)));
 
+  Stream<GameSocketResponse> generateNumbers = (() async* {
+      await Future<void>.delayed(const Duration(seconds: 2));
+
+      for (int i = 1; i > 0; i++) {
+          await Future<void>.delayed(const Duration(seconds: 1));
+          yield GameSocketResponse.fromJson(jsonDecode('{"message": "Room $i"}'));
+      }
+  })();
+
   void connectServer(String username) {
     _gameServerWebSocket.sink.add(
       jsonEncode(

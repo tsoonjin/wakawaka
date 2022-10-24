@@ -42,7 +42,7 @@ class LobbyScreenState extends State<LobbyScreen> {
             Padding(
       padding: const EdgeInsets.all(12.0),
       child: StreamBuilder<GameSocketResponse>(
-        stream: widget.provider.serverStream,
+        stream: widget.provider.generateNumbers,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -52,12 +52,14 @@ class LobbyScreenState extends State<LobbyScreen> {
 
           if (snapshot.connectionState == ConnectionState.active &&
               snapshot.hasData) {
+            final recv = snapshot.data!.message;
             return Center(
               child: Text(
-                '$snapshot.data!.message',
+                recv,
                 style: const TextStyle(
                   color: Colors.lightBlue,
                   fontSize: 24.0,
+                  decoration: TextDecoration.none,
                   fontWeight: FontWeight.bold,
                 ),
               ),
