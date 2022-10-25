@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:waka/models/game_socket_request.dart';
 import 'package:waka/models/game_socket_response.dart';
+import 'package:waka/models/room_socket_response.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// Manages opening and closing the sockets for the
@@ -15,9 +16,9 @@ class RealTimeGameProvider {
           Uri.parse('ws://localhost:8080/connect'),
         );
 
-  Stream<GameSocketResponse> get serverStream => _gameServerWebSocket.stream
-      .map<GameSocketResponse>(
-          (value) => GameSocketResponse.fromJson(jsonDecode(value)));
+  Stream<RoomSocketResponse> get serverStream => _gameServerWebSocket.stream
+      .map<RoomSocketResponse>(
+          (value) => RoomSocketResponse.fromJson(jsonDecode(value)));
 
   Stream<GameSocketResponse> generateNumbers = (() async* {
       await Future<void>.delayed(const Duration(seconds: 2));

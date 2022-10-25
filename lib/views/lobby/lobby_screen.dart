@@ -4,7 +4,7 @@ import './widgets/post_list.dart';
 import 'package:waka/models/post.dart';
 import 'package:waka/services/game_service.dart';
 import 'package:waka/view_models/realtime_game_provider.dart';
-import 'package:waka/models/game_socket_response.dart';
+import 'package:waka/models/room_socket_response.dart';
 
 class LobbyScreen extends StatefulWidget {
   final RealTimeGameProvider provider;
@@ -41,8 +41,8 @@ class LobbyScreenState extends State<LobbyScreen> {
         children: [
             Padding(
       padding: const EdgeInsets.all(12.0),
-      child: StreamBuilder<GameSocketResponse>(
-        stream: widget.provider.generateNumbers,
+      child: StreamBuilder<RoomSocketResponse>(
+        stream: widget.provider.serverStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -52,7 +52,7 @@ class LobbyScreenState extends State<LobbyScreen> {
 
           if (snapshot.connectionState == ConnectionState.active &&
               snapshot.hasData) {
-            final recv = snapshot.data!.message;
+            final recv = snapshot.data!.name;
             return Center(
               child: Text(
                 recv,
