@@ -52,23 +52,58 @@ class LobbyScreenState extends State<LobbyScreen> {
 
           if (snapshot.connectionState == ConnectionState.active &&
               snapshot.hasData) {
-            final recv = snapshot.data!.name;
-            return Center(
-              child: Text(
-                recv,
-                style: const TextStyle(
-                  color: Colors.lightBlue,
-                  fontSize: 24.0,
-                  decoration: TextDecoration.none,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    Text(
+                        snapshot.data!.name,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 24.0,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.bold,
+                        ),
+                    ),
+                    Text(
+                        snapshot.data!.state,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            decoration: TextDecoration.none,
+                        ),
+                    ),
+                    Text(
+                        'Ready: ${snapshot.data!.readyPlayers.join(', ')}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            decoration: TextDecoration.none,
+                        ),
+                    ),
+                    Text(
+                        'Waiting: ${snapshot.data!.waitingPlayers.join(', ')}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            decoration: TextDecoration.none,
+                        ),
+                    ),
+                ]
             );
           }
 
           if (snapshot.connectionState == ConnectionState.done) {
             return const Center(
-              child: Text('No more data'),
+              child: Text(
+                        'No more data',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 24.0,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.bold,
+                        ),
+                    ),
             );
           }
 
