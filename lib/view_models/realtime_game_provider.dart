@@ -10,15 +10,21 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 /// two different sockets: ETH socker and BTC socket
 class RealTimeGameProvider {
   late final WebSocketChannel _gameServerWebSocket;
+  final streamController = StreamController.broadcast();
 
   RealTimeGameProvider()
       : _gameServerWebSocket = WebSocketChannel.connect(
           Uri.parse('ws://localhost:8080/connect'),
-        );
+      ) {
+        streamController.addStream(_gameServerWebSocket.stream);
+      }
 
-  Stream<RoomSocketResponse> get serverStream => _gameServerWebSocket.stream
+  Stream<RoomSocketResponse> get serverStream {
+    return streamController.stream
       .map<RoomSocketResponse>(
           (value) => RoomSocketResponse.fromJson(jsonDecode(value)));
+  }
+
 
   Stream<GameSocketResponse> generateNumbers = (() async* {
       await Future<void>.delayed(const Duration(seconds: 2));

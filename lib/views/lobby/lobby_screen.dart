@@ -29,6 +29,13 @@ class LobbyScreenState extends State<LobbyScreen> {
   }
 
   @override
+  void dispose() {
+      print("DISPOSE");
+      widget.provider.closeServer();
+      super.dispose();
+  }
+
+  @override
   void initState() {
       super.initState();
   }
