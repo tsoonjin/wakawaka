@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:waka/models/player.dart';
+import 'package:waka/view_models/realtime_game_provider.dart';
 
 class GameLobbyScreen extends StatefulWidget {
-  const GameLobbyScreen({Key? key, required int index}) : super(key: key);
+  final RealTimeGameProvider provider;
+  const GameLobbyScreen({Key? key, required String roomName, required this.provider}) : super(key: key);
 
   @override
   GameLobbyScreenState createState() {
@@ -12,6 +14,186 @@ class GameLobbyScreen extends StatefulWidget {
 
 class GameLobbyScreenState extends State<GameLobbyScreen> {
   final formKey = GlobalKey<FormState>();
+  final Player player1 = Player(name: "Bob", score: 0, health: 3);
+  final Player player2 = Player(name: "Alice", score: 0, health: 3);
+  String timeLeft = "60";
+  final List<String> _grid = [
+    '',
+    'm',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'r',
+    '',
+  ];
+
+  TextStyle kCustomText({
+      double fontSize = 16.0,
+      Color color = Colors.black,
+      FontWeight fontWeight = FontWeight.normal
+  }) =>
+  TextStyle(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: fontWeight
+  );
+
+  void _tapped(int index) {
+      print("Tapped $index");
+  }
+
+  Widget _buildCell(String value) {
+      if (value == "") {
+          return Text(
+              value,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+              ),
+          );
+      }
+      String imagePath = value == "m" ? "assets/mole.png" : "assets/rabbit.png";
+      return Image.asset(
+          imagePath,
+          height: 100,
+          width: 100
+      );
+  }
+
+  Widget _buildGrid() {
+    return Expanded(
+      flex: 8,
+      child: Container(
+      width: 800,
+      height:800,
+      child: GridView.builder(
+          padding: const EdgeInsets.all(32),
+          itemCount: 9,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              onTap: () {
+                _tapped(index);
+              },
+              child: Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
+                child: Center(
+                    child: _buildCell(_grid[index])
+                ),
+              ),
+            );
+          }),
+    )
+            );
+  }
+
+  Widget _buildPointsTable(Player player1, Player player2) {
+    return Expanded(
+        flex: 2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(
+                20.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    player1.name,
+                    style: kCustomText(
+                        fontSize: 22.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                      children: List.generate(player1.health, (_) =>
+                          const Icon(Icons.favorite,
+                              color: Colors.pink,
+                              size: 24.0,
+                          )
+                      )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    player1.score.toString(),
+                    style: kCustomText(
+                        color: Colors.black,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold),
+                  )]
+                  )
+                          ),
+                  Column(
+                  children: [
+                      Text(
+                          "Wackamole",
+                          style: kCustomText(
+                              color: Colors.black,
+                              fontSize: 42.0,
+                              fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                          timeLeft,
+                          style: kCustomText(
+                              color: Colors.black,
+                              fontSize: 42.0,
+                              fontWeight: FontWeight.bold),
+                      )
+                  ]),
+            Padding(
+              padding: const EdgeInsets.all(
+                20.0,
+              ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    player2.name,
+                    style: kCustomText(
+                        fontSize: 22.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                      children: List.generate(player2.health, (_) =>
+                          const Icon(Icons.favorite,
+                              color: Colors.pink,
+                              size: 24.0,
+                          )
+                      )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    player2.score.toString(),
+                    style: kCustomText(
+                        color: Colors.black,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold),
+                  )]
+              ),
+            )
+          ],
+        ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,65 +206,12 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
         decoration: const BoxDecoration(
             color: backgroundColor
         ),
-        child: FractionallySizedBox(
-            alignment: Alignment.center,
-            heightFactor: 0.3,
-            widthFactor: 0.5,
-            child: Container(
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.orange,
-            ),
-            child:
-        Form(
-            key: formKey,
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 240,
-              width: 240,
-              child: Image.network('https://freesvg.org/img/mole2.png'),
-            ),
-            const SizedBox(height: 32),
-            Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ConstrainedBox(
-                    constraints: BoxConstraints.tight(const Size(300, 50)),
-                    child:
-                    TextFormField(
-                        validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                                return "Thou shall not enter without a name";
-                            }
-                            return (value.length > 12) ? "Please limit your name to 12 char" : null;
-                        },
-                        decoration: const InputDecoration(
-                                        icon: Icon(Icons.person),
-                                        border: UnderlineInputBorder(),
-                                        labelText: 'Enter your username',),
-                    ))),
-            const SizedBox(height: 32),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.white
-                ),
-                onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                        );
-                        GoRouter.of(context).push('/games');
-                    }
-                },
-                child: const Text('Enter'),
-            ),
+        child: Column(
+            children: [
+                _buildPointsTable(player1, player2),
+                _buildGrid()
             ],
-        ),
         )
-      ))),
-    );
+    ));
   }
 }

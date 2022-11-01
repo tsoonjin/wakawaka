@@ -40,7 +40,8 @@ class App extends StatelessWidget {
         builder: (context, state) {
           return GameLobbyScreen(
             key: state.pageKey,
-            index: int.parse(state.params['id'] ?? '0')
+            provider: _provider,
+            roomName: state.params['id'] ?? "Anon"
           );
         },
       ),
