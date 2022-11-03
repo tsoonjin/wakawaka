@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:convert';
 
 import 'package:waka/models/game_socket_request.dart';
 import 'package:waka/models/game_socket_response.dart';
 import 'package:waka/models/room_socket_response.dart';
+import 'package:waka/models/gameplay_response.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// Manages opening and closing the sockets for the
@@ -24,6 +26,49 @@ class RealTimeGameProvider {
       .map<RoomSocketResponse>(
           (value) => RoomSocketResponse.fromJson(jsonDecode(value)));
   }
+
+
+  Stream<GamePlayResponse> generateBoard = (() async* {
+      bool toggle = false;
+      for (int i = 60; i >= 0; i--) {
+          print("Still counting $i");
+          await Future<void>.delayed(const Duration(seconds: 1));
+          String state = "RUNNING";
+          Map<String, int> score = {
+              "Bob": 0,
+              "Alice": 0
+          };
+          Map<String, int> health = {
+              "Bob": 3,
+              "Alice": 3
+          };
+          List<String> board = [
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+          ];
+          int moleIdx = Random().nextInt(9);
+          int rabbitIdx = Random().nextInt(9);
+          while (rabbitIdx == moleIdx) {
+            rabbitIdx = Random().nextInt(9);
+          }
+          if (toggle) {
+              board[moleIdx] = 'm';
+              board[rabbitIdx] = 'r';
+          }
+          if (i == 0) {
+              state = 'GAME_OVER';
+          }
+          toggle = !toggle;
+          yield GamePlayResponse(i, score, health, state, board);
+      }
+  })();
 
 
   Stream<GameSocketResponse> generateNumbers = (() async* {

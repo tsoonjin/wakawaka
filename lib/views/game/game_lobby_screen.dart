@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:waka/models/player.dart';
+import 'package:waka/models/gameplay_response.dart';
 import 'package:waka/view_models/realtime_game_provider.dart';
 
 class GameLobbyScreen extends StatefulWidget {
@@ -17,6 +19,8 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
   final Player player1 = Player(name: "Bob", score: 0, health: 3);
   final Player player2 = Player(name: "Alice", score: 0, health: 3);
   String timeLeft = "60";
+  Timer? countdownTimer;
+  Duration? initialTimer;
   final List<String> _grid = [
     '',
     'm',
@@ -40,8 +44,29 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
       fontWeight: fontWeight
   );
 
+   void setCountDown() {
+    const reduceSecondsBy = 1;
+    setState(() {
+      final seconds = initialTimer != null
+        ? initialTimer!.inSeconds - reduceSecondsBy
+        : 60;
+      if (seconds < 0) {
+        countdownTimer!.cancel();
+      } else {
+        initialTimer = Duration(seconds: seconds);
+      }
+    });
+  }
+
   void _tapped(int index) {
       print("Tapped $index");
+  }
+
+  @override
+  void initState() {
+    initialTimer = const Duration(seconds: 60);
+    countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
+      super.initState();
   }
 
   Widget _buildCell(String value) {
@@ -68,31 +93,62 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
       child: Container(
       width: 800,
       height:800,
-      child: GridView.builder(
-          padding: const EdgeInsets.all(32),
-          itemCount: 9,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              onTap: () {
-                _tapped(index);
-              },
-              child: Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
-                child: Center(
-                    child: _buildCell(_grid[index])
-                ),
-              ),
+      child: StreamBuilder<GamePlayResponse>(
+        stream: widget.provider.generateBoard,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }),
+          }
+            if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
+                print(snapshot.data);
+                return
+                        GridView.builder(
+                            padding: const EdgeInsets.all(32),
+                            itemCount: 9,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                    onTap: () {
+                                        _tapped(index);
+                                    },
+                                    child: Container(
+                                               decoration:
+                                               BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
+                                               child: Center(
+                                                   child: _buildCell(snapshot.data?.board[index] ?? '')
+                                               ),
+                                           ),
+                                );
+                            });
+            }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const Center(
+              child: Text(
+                        'No more data',
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 24.0,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.bold,
+                        ),
+                    ),
+            );
+          }
+
+          return const Center(
+            child: Text('No data'),
+          );
+        }
+      )
     )
-            );
+    );
   }
 
-  Widget _buildPointsTable(Player player1, Player player2) {
+  Widget _buildPointsTable(Player player1, Player player2, Duration timer) {
     return Expanded(
         flex: 2,
         child: Row(
@@ -146,7 +202,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                          timeLeft,
+                          timer.inSeconds.toString(),
                           style: kCustomText(
                               color: Colors.black,
                               fontSize: 42.0,
@@ -208,7 +264,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
         ),
         child: Column(
             children: [
-                _buildPointsTable(player1, player2),
+                _buildPointsTable(player1, player2, initialTimer ?? const Duration(seconds: 60)),
                 _buildGrid()
             ],
         )
