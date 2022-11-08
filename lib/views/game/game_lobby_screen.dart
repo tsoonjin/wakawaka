@@ -16,22 +16,11 @@ class GameLobbyScreen extends StatefulWidget {
 
 class GameLobbyScreenState extends State<GameLobbyScreen> {
   final formKey = GlobalKey<FormState>();
-  final Player player1 = Player(name: "Bob", score: 0, health: 3);
-  final Player player2 = Player(name: "Alice", score: 0, health: 3);
+  Player player1 = Player(name: "Bob", score: 0, health: 3);
+  Player player2 = Player(name: "Alice", score: 0, health: 3);
   String timeLeft = "60";
   Timer? countdownTimer;
   Duration? initialTimer;
-  final List<String> _grid = [
-    '',
-    'm',
-    '',
-    '',
-    '',
-    '',
-    '',
-    'r',
-    '',
-  ];
 
   TextStyle kCustomText({
       double fontSize = 16.0,
@@ -58,8 +47,29 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
     });
   }
 
-  void _tapped(int index) {
-      print("Tapped $index");
+   String _getWinner(Player player1, Player player2) {
+       if (player1.health == 0) {
+           return player2.name;
+       }
+       if (player2.health == 0) {
+           return player1.name;
+       }
+       if (player1.score == player2.score) {
+           return "";
+       }
+       return player1.score > player2.score ? player1.name : player2.name;
+   }
+
+  void _tapped(String cell, int idx) {
+      widget.provider.sendGameAction(player1.name, idx);
+      setState(() {
+          if (cell == 'm') {
+              player1 = Player(name: player1.name, score: player1.score + 1, health: player1.health);
+          }
+          if (cell == 'r') {
+              player1 = Player(name: player1.name, score: player1.score, health: player1.health - 1);
+          }
+      });
   }
 
   @override
@@ -70,7 +80,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
   }
 
   Widget _buildCell(String value) {
-      if (value == "") {
+      if (value != "m" && value != "r") {
           return Text(
               value,
               style: const TextStyle(
@@ -97,12 +107,50 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
         stream: widget.provider.generateBoard,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+                child: GridView.builder(
+                            padding: const EdgeInsets.all(32),
+                            itemCount: 9,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                    child: Container(
+                                               decoration:
+                                               BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
+                                               child: Center(
+                                                   child: _buildCell(index == 4 ? "Start": '')
+                                               ),
+                                           ),
+                                );
+                            })
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done || player1.health == 0 || player2.health == 0) {
+             String winner = _getWinner(player1, player2);
+             String endGameMsg = "Game Over\n${winner == "" ? "It is a draw !": "Winner is $winner"}";
+            return Center(
+              child: GridView.builder(
+                            padding: const EdgeInsets.all(32),
+                            itemCount: 9,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                    child: Container(
+                                               decoration:
+                                               BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
+                                               child: Center(
+                                                   child: _buildCell(index == 4 ? endGameMsg: '')
+                                               ),
+                                           ),
+                                );
+                            })
             );
           }
             if (snapshot.connectionState == ConnectionState.active && snapshot.hasData) {
-                print(snapshot.data);
                 return
                         GridView.builder(
                             padding: const EdgeInsets.all(32),
@@ -113,7 +161,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
                             itemBuilder: (BuildContext context, int index) {
                                 return GestureDetector(
                                     onTap: () {
-                                        _tapped(index);
+                                        _tapped(snapshot.data?.board[index] ?? '', index);
                                     },
                                     child: Container(
                                                decoration:
@@ -125,19 +173,6 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
                                 );
                             });
             }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return const Center(
-              child: Text(
-                        'No more data',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 24.0,
-                            decoration: TextDecoration.none,
-                            fontWeight: FontWeight.bold,
-                        ),
-                    ),
-            );
-          }
 
           return const Center(
             child: Text('No data'),

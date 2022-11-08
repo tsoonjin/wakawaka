@@ -80,6 +80,17 @@ class RealTimeGameProvider {
       }
   })();
 
+  void sendGameAction(String username, int hitIdx) {
+    _gameServerWebSocket.sink.add(
+      jsonEncode(
+        GameSocketRequest(
+           "send",
+           { "name":  username, "hit": hitIdx}
+        ).toJson(),
+      ),
+    );
+  }
+
   void connectServer(String username) {
     _gameServerWebSocket.sink.add(
       jsonEncode(
