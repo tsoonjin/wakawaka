@@ -74,6 +74,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
 
   @override
   void initState() {
+    widget.provider.startGame("Bob");
     initialTimer = const Duration(seconds: 60);
     countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) => setCountDown());
       super.initState();
@@ -104,9 +105,9 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
       width: 800,
       height:800,
       child: StreamBuilder<GamePlayResponse>(
-        stream: widget.provider.generateBoard,
+        stream: widget.provider.gameStream,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting && initialTimer != null && initialTimer! < const Duration(seconds: 60)) {
             return Center(
                 child: GridView.builder(
                             padding: const EdgeInsets.all(32),

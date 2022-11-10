@@ -27,6 +27,11 @@ class RealTimeGameProvider {
           (value) => RoomSocketResponse.fromJson(jsonDecode(value)));
   }
 
+  Stream<GamePlayResponse> get gameStream {
+    return streamController.stream
+      .map<GamePlayResponse>(
+          (value) => GamePlayResponse.fromJson(jsonDecode(value)));
+  }
 
   Stream<GamePlayResponse> generateBoard = (() async* {
       bool toggle = false;
@@ -79,6 +84,17 @@ class RealTimeGameProvider {
           yield GameSocketResponse.fromJson(jsonDecode('{"message": "Room $i"}'));
       }
   })();
+
+  void startGame(String username) {
+    _gameServerWebSocket.sink.add(
+      jsonEncode(
+        GameSocketRequest(
+           "init",
+           { "name":  username}
+        ).toJson(),
+      ),
+    );
+  }
 
   void sendGameAction(String username, int hitIdx) {
     _gameServerWebSocket.sink.add(
