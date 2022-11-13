@@ -107,7 +107,7 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
       child: StreamBuilder<GamePlayResponse>(
         stream: widget.provider.gameStream,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting && initialTimer != null && initialTimer! < const Duration(seconds: 60)) {
+          if (snapshot.connectionState == ConnectionState.waiting && initialTimer != null && initialTimer! >= const Duration(seconds: 60)) {
             return Center(
                 child: GridView.builder(
                             padding: const EdgeInsets.all(32),
@@ -174,10 +174,25 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
                                 );
                             });
             }
-
-          return const Center(
-            child: Text('No data'),
-          );
+            return Center(
+                child: GridView.builder(
+                            padding: const EdgeInsets.all(32),
+                            itemCount: 9,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                                return GestureDetector(
+                                    child: Container(
+                                               decoration:
+                                               BoxDecoration(border: Border.all(color: Colors.grey[700]!)),
+                                               child: Center(
+                                                   child: _buildCell("")
+                                               ),
+                                           ),
+                                );
+                            })
+            );
         }
       )
     )
