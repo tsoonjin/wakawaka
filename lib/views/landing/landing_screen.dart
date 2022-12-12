@@ -19,7 +19,6 @@ class LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     const backgroundColor = Color(0xFFF2EAE0);
-
     return Scaffold(
       body: Container(
         height: double.maxFinite,
@@ -45,7 +44,11 @@ class LandingScreenState extends State<LandingScreen> {
             SizedBox(
               height: 240,
               width: 240,
-              child: Image.network('https://freesvg.org/img/mole2.png'),
+              child: Image.asset(
+                  "assets/mole.png",
+                  height: 100,
+                  width: 100
+              )
             ),
             const SizedBox(height: 32),
             Padding(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waka/models/player.dart';
 import 'package:waka/models/gameplay_response.dart';
 import 'package:waka/view_models/realtime_game_provider.dart';
+import './cell.dart';
 
 class GameLobbyScreen extends StatefulWidget {
   final RealTimeGameProvider provider;
@@ -90,12 +91,9 @@ class GameLobbyScreenState extends State<GameLobbyScreen> {
               ),
           );
       }
-      String imagePath = value == "m" ? "assets/mole.png" : "assets/rabbit.png";
-      return Image.asset(
-          imagePath,
-          height: 100,
-          width: 100
-      );
+      String initImagePath = value == "m" ? "assets/mole.png" : "assets/rabbit.png";
+      String hitImagePath = value == "m" ? "assets/rabbit.png" : "assets/mole.png";
+      return Cell(initImagePath: initImagePath, hitImagePath: hitImagePath);
   }
 
   Widget _buildGrid() {
