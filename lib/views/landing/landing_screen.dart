@@ -15,12 +15,23 @@ class LandingScreen extends StatefulWidget {
 class LandingScreenState extends State<LandingScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
+  Offset mousePos = Offset.zero;
 
   @override
   Widget build(BuildContext context) {
     const backgroundColor = Color(0xFFF2EAE0);
     return Scaffold(
-      body: Container(
+      body: MouseRegion(
+        cursor: SystemMouseCursors.none,
+          onHover: (eve) {
+            print(mousePos);
+            setState(() {
+              mousePos = eve.position;
+            });
+          },
+          child: Stack(
+                     children: [
+                         Container(
         height: double.maxFinite,
         width: double.maxFinite,
         decoration: const BoxDecoration(
@@ -92,6 +103,21 @@ class LandingScreenState extends State<LandingScreen> {
         ),
         )
       ))),
-    );
+ Positioned(
+         left: mousePos.dx - 100,
+         top: mousePos.dy - 100,
+         child: Container(
+           height: 200,
+           width: 200,
+           decoration: BoxDecoration(
+               borderRadius: const BorderRadius.all(Radius.circular(100)),
+               border: Border.all(
+                   width: 5,
+                   color: Colors.red,
+                   style: BorderStyle.solid)),
+          ),
+       )
+        ])
+    ));
   }
 }
