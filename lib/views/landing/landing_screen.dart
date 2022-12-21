@@ -16,22 +16,13 @@ class LandingScreenState extends State<LandingScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   Offset mousePos = Offset.zero;
+  bool isInRegion = false;
 
   @override
   Widget build(BuildContext context) {
     const backgroundColor = Color(0xFFF2EAE0);
     return Scaffold(
-      body: MouseRegion(
-        cursor: SystemMouseCursors.none,
-          onHover: (eve) {
-            print(mousePos);
-            setState(() {
-              mousePos = eve.position;
-            });
-          },
-          child: Stack(
-                     children: [
-                         Container(
+      body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
         decoration: const BoxDecoration(
@@ -41,10 +32,20 @@ class LandingScreenState extends State<LandingScreen> {
             alignment: Alignment.center,
             heightFactor: 0.3,
             widthFactor: 0.5,
-            child: Container(
+            child:  MouseRegion(
+        cursor:  mousePos != Offset.zero ? SystemMouseCursors.none : SystemMouseCursors.basic,
+          onHover: (eve) {
+            setState(() {
+              mousePos = eve.position;
+            });
+          },
+          onEnter: (eve) {
+            isInRegion = true;
+          },
+          child: Stack(
+                     children: [Container(
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.orange,
             ),
             child:
         Form(
@@ -102,7 +103,7 @@ class LandingScreenState extends State<LandingScreen> {
             ],
         ),
         )
-      ))),
+      ),
  Positioned(
          left: mousePos.dx - 100,
          top: mousePos.dy - 100,
@@ -117,7 +118,8 @@ class LandingScreenState extends State<LandingScreen> {
                    style: BorderStyle.solid)),
           ),
        )
-        ])
+        ]))
+        )
     ));
   }
 }

@@ -1,5 +1,5 @@
 import 'package:waka/view_models/realtime_game_provider.dart';
-import 'package:waka/views/landing/landing_screen.dart';
+import 'package:waka/views/landing/landing_screen_v2.dart';
 import 'package:waka/views/lobby/lobby_screen.dart';
 import 'package:waka/views/game/game_lobby_screen.dart';
 import 'package:flutter/material.dart';
